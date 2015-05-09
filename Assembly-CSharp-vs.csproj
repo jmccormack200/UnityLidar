@@ -46,9 +46,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\UDPTest.cs" />
+     <Compile Include="Assets\Scripts\fireBaseTest.cs" />
      <Compile Include="Assets\SimpleJSON\JSON Tests\CSharp\Test_CSharp.cs" />
      <Compile Include="Assets\SimpleJSON\plugins\SimpleJSON.cs" />
-     <Compile Include="Assets\fireBaseTest.cs" />
      <None Include="Assets\SimpleJSON\JSON Tests\TroubleShoot.txt" />
      <None Include="Assets\Stockcar\ReadMe.txt" />
  <Reference Include="UnityEngine.UI">
