@@ -7,7 +7,7 @@
 -r:Assets/SimpleJSON/plugins/ICSharpCode.SharpZipLib.dll
 -r:"C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll"
 -r:"C:\Program Files\Unity\Editor\Data\PlaybackEngines\iossupport\UnityEditor.iOS.Extensions.Xcode.dll"
--define:UNITY_5_0_0
+-define:UNITY_5_0_1
 -define:UNITY_5_0
 -define:UNITY_5
 -define:ENABLE_LICENSE_RENAME

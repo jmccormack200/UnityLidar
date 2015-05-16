@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 using System;
@@ -6,6 +6,20 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Text.RegularExpressions;
+
+public struct LidarPoint{
+	public int Id;
+	public int X;
+	public int Y;
+
+	public LidarPoint(string id, string x, string y){
+		Id = int.Parse (id);
+		X = int.Parse (x);
+		Y = int.Parse (y);
+	}
+}
+
 
 public class UDPTest : MonoBehaviour {
 
@@ -69,12 +83,43 @@ public class UDPTest : MonoBehaviour {
 					print (">> " + text);
 
 					lastReceivedUDPPackets = text;
+					LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
+					Debug.Log(lidarpoint.Id);
+					Debug.Log (lidarpoint.X);
 					allReceivedUDPPackets = allReceivedUDPPackets + text;
 				}
 				catch (Exception err){
 					print (err.ToString ());
 				}
 			}
+	}
+
+	private static LidarPoint convertData(string data){
+		//ID number [(][0-9]+[,][ ]?[(]
+		Match idRawMatch = Regex.Match (data, "[(][0-9]+[,][ ]?[(]");
+		string idRawString = (string)idRawMatch.ToString ();
+		//Remove paranthesis and comma
+		Match idMatch = Regex.Match (idRawString, "[0-9]+");
+		string idString = (string)idMatch.ToString ();
+	
+		//Remove both digits [0-9]+[,][0-9]+ gives 100,100 format
+		Match pointRawMatch = Regex.Match (data, "[0-9]+[,][ ]?[0-9]+");
+		string pointRawString = (string)pointRawMatch.ToString ();
+		//First digit [0-9]+[,] gives 100,
+		Match xRawMatch = Regex.Match (pointRawString, "[0-9]+[,]");
+		string xRawString = (string)xRawMatch.ToString ();
+		//Second digit [,][0-9]+ gives ,100
+		Match yRawMatch = Regex.Match (data, "[,][ ]?[0-9]+");
+		string yRawString = (string)yRawMatch.ToString ();
+		//First digit pure
+		Match xFinalMatch = Regex.Match (xRawString, "[0-9]+");
+		string xFinal = (string) xFinalMatch.ToString ();
+		//Second digit pure
+		Match yFinalMatch = Regex.Match (yRawString, "[0-9]+");
+		string yFinal = (string)yFinalMatch.ToString ();
+
+		return new LidarPoint (idString, xFinal, yFinal);
+
 	}
 	
 	public string getLatestUDPPacket(){
