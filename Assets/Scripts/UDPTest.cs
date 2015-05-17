@@ -46,7 +46,16 @@ public class UDPTest : MonoBehaviour {
 
 	// Use this for initialization
 	public void Start () {
-			init ();
+		//For now Id is only equal to 1, this is simply to prepare for 
+		//the use of multiple Lidars. 
+		int lidarId = 1;
+		for (int i = 0; i <=360; i++) {
+			Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, new Vector3 (10000, 10000, 10000), Quaternion.Euler (0, 0, 0));
+			pointInstance.transform.parent = transform;
+			string name = (string)lidarId.ToString() + i.ToString();
+			pointInstance.name = name;
+		}
+		init ();
 	}
 
 	void OnGUI(){
@@ -73,6 +82,7 @@ public class UDPTest : MonoBehaviour {
 		print ("Right above");
 	}
 
+	//Threaded portion for recieving and preprocessing the data. 
 	private void ReceiveData(){
 		client = new UdpClient (port);
 		while (true) {
@@ -81,7 +91,7 @@ public class UDPTest : MonoBehaviour {
 				byte[] data = client.Receive (ref anyIP);
 
 				string text = Encoding.UTF8.GetString (data);
-				print (">> " + text);
+				//print (">> " + text);
 				lastReceivedUDPPackets = text;
 				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
 
@@ -149,6 +159,9 @@ public class UDPTest : MonoBehaviour {
 		string message = "That outta do it";
 		print(message);
 		Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, locationVector3, Quaternion.Euler (0, 0, 0));
+		pointInstance.transform.parent = transform;
+		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
+		pointInstance.name = name;
 	}
 	
 	public string getLatestUDPPacket(){
@@ -159,10 +172,7 @@ public class UDPTest : MonoBehaviour {
 	//On each frame, read from the Lidar Queue 
 	//Then if there is data call parseData
 	void Update (){
-		string temp = (string) queue.Count.ToString();
-		print(temp);
 		if (queue.Count != 0){
-			print ("Now we are here");
 			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
 			parseData(lidarpoint);
 		}
