@@ -27,10 +27,11 @@ public class UDPTest : MonoBehaviour {
 	UdpClient client;
 
 	public int port;
-
+	public int scale = 10;
+	public Rigidbody pointCloud;
 	public string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
-
+	private Queue queue = new Queue();
 
 	private static void Main(){
 		UDPTest receiveObj = new UDPTest ();
@@ -60,38 +61,38 @@ public class UDPTest : MonoBehaviour {
 	}
 
 	private void init(){
-			print ("UDPSend.init()");
-			port = 8051;
-			print ("Sending to 127.0.0.1 : " + port);
-			print ("Test-Sending to this Port: nc -u 127.0.0.1 " + port + "");
+		print ("UDPSend.init()");
+		port = 8051;
+		print ("Sending to 127.0.0.1 : " + port);
+		print ("Test-Sending to this Port: nc -u 127.0.0.1 " + port + "");
 
-			receiveThread = new Thread (
-				new ThreadStart (ReceiveData));
-			receiveThread.IsBackground = true;
-			receiveThread.Start ();
+		receiveThread = new Thread (
+			new ThreadStart (ReceiveData));
+		receiveThread.IsBackground = true;
+		receiveThread.Start ();
+		print ("Right above");
 	}
 
 	private void ReceiveData(){
-			client = new UdpClient (port);
-			while (true) {
-				try {
-					IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
-					byte[] data = client.Receive (ref anyIP);
+		client = new UdpClient (port);
+		while (true) {
+			try {
+				IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
+				byte[] data = client.Receive (ref anyIP);
 
-					string text = Encoding.UTF8.GetString (data);
+				string text = Encoding.UTF8.GetString (data);
+				print (">> " + text);
+				lastReceivedUDPPackets = text;
+				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
 
-					print (">> " + text);
+				queue.Enqueue(lidarpoint);
 
-					lastReceivedUDPPackets = text;
-					LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
-					Debug.Log(lidarpoint.Id);
-					Debug.Log (lidarpoint.X);
-					allReceivedUDPPackets = allReceivedUDPPackets + text;
-				}
-				catch (Exception err){
-					print (err.ToString ());
-				}
+				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
+			catch (Exception err){
+				print (err.ToString ());
+			}
+		}
 	}
 
 	private static LidarPoint convertData(string data){
@@ -121,9 +122,60 @@ public class UDPTest : MonoBehaviour {
 		return new LidarPoint (idString, xFinal, yFinal);
 
 	}
+
+	private void parseData (LidarPoint lidarpoint){
+		int angle = lidarpoint.X;
+		int length = lidarpoint.Y;
+		
+		//float angle = N ["angle"].AsFloat;
+		//float length = N ["length"].AsFloat;
+		
+		float radians = angle * (Mathf.PI / 180);
+		float x = length * Mathf.Sin (radians);
+		float y = length * Mathf.Cos (radians);
+		float z = 0.0f;
+		
+		
+		float new_x = transform.position.x + x;
+		new_x = new_x / scale;
+		float new_y = transform.position.y + y;
+		new_y = new_y / scale;
+		float new_z = transform.position.z + z;
+		
+		Vector3 locationVector3 = new Vector3 (new_x, new_y, new_z);
+		
+		Debug.Log (new_x);
+		Debug.Log (new_y);
+		string message = "That outta do it";
+		print(message);
+		Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, locationVector3, Quaternion.Euler (0, 0, 0));
+	}
 	
 	public string getLatestUDPPacket(){
 			allReceivedUDPPackets = "";
 			return lastReceivedUDPPackets;
 	}
+
+	//On each frame, read from the Lidar Queue 
+	//Then if there is data call parseData
+	void Update (){
+		string temp = (string) queue.Count.ToString();
+		print(temp);
+		if (queue.Count != 0){
+			print ("Now we are here");
+			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
+			parseData(lidarpoint);
+		}
+	}
+
+	//This section prevents Unity from crashing everytime the program
+	//is reloaded
+	void OnDisable() 
+	{ 
+		if ( receiveThread!= null) 
+			receiveThread.Abort(); 
+		
+		client.Close(); 
+	} 
+
 }
