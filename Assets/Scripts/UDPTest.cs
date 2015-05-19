@@ -28,7 +28,7 @@ public class UDPTest : MonoBehaviour {
 
 	public int port;
 	public int scale = 10;
-	public Rigidbody pointCloud;
+	public Transform pointCloud;
 	public string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
@@ -48,6 +48,7 @@ public class UDPTest : MonoBehaviour {
 	public void Start () {
 		//For now Id is only equal to 1, this is simply to prepare for 
 		//the use of multiple Lidars. 
+		/*
 		int lidarId = 1;
 		for (int i = 0; i <=360; i++) {
 			Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, new Vector3 (10000, 10000, 10000), Quaternion.Euler (0, 0, 0));
@@ -55,6 +56,7 @@ public class UDPTest : MonoBehaviour {
 			string name = (string)lidarId.ToString() + i.ToString();
 			pointInstance.name = name;
 		}
+		*/
 		init ();
 	}
 
@@ -158,7 +160,7 @@ public class UDPTest : MonoBehaviour {
 		Debug.Log (new_y);
 		string message = "That outta do it";
 		print(message);
-		Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, locationVector3, Quaternion.Euler (0, 0, 0));
+		GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
 		pointInstance.transform.parent = transform;
 		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 		pointInstance.name = name;
