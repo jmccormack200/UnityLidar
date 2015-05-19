@@ -58,6 +58,7 @@ public class UDPTest : MonoBehaviour {
 		}
 		*/
 		init ();
+		InvokeRepeating ("Loop", Mathf.Epsilon, 0.00002f);
 	}
 
 	void OnGUI(){
@@ -67,7 +68,7 @@ public class UDPTest : MonoBehaviour {
 			GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
 			        + "shell> nc -u 127.0.0.1 : "+port+" \n"
 			        + "\nLast Packet: \n"+ lastReceivedUDPPackets
-			        + "\n\nAll Messages: \n"+allReceivedUDPPackets
+			   //     + "\n\nAll Messages: \n"+allReceivedUDPPackets
 			        ,style);
 	}
 
@@ -82,6 +83,8 @@ public class UDPTest : MonoBehaviour {
 		receiveThread.IsBackground = true;
 		receiveThread.Start ();
 		print ("Right above");
+
+
 	}
 
 	//Threaded portion for recieving and preprocessing the data. 
@@ -156,10 +159,10 @@ public class UDPTest : MonoBehaviour {
 		
 		Vector3 locationVector3 = new Vector3 (new_x, new_y, new_z);
 		
-		Debug.Log (new_x);
-		Debug.Log (new_y);
-		string message = "That outta do it";
-		print(message);
+		//Debug.Log (new_x);
+		//Debug.Log (new_y);
+		//string message = "That outta do it";
+		//print(message);
 		GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
 		pointInstance.transform.parent = transform;
 		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
@@ -173,11 +176,19 @@ public class UDPTest : MonoBehaviour {
 
 	//On each frame, read from the Lidar Queue 
 	//Then if there is data call parseData
-	void Update (){
+	void Loop (){
 		if (queue.Count != 0){
 			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
 			parseData(lidarpoint);
 		}
+	}
+
+	void OnAplicationQuit()
+	{
+		if (receiveThread.IsAlive) {
+			receiveThread.Abort(); 
+		}
+		client.Close(); 
 	}
 
 	//This section prevents Unity from crashing everytime the program
@@ -189,5 +200,8 @@ public class UDPTest : MonoBehaviour {
 		
 		client.Close(); 
 	} 
+	void Update()
+	{
 
+	}
 }

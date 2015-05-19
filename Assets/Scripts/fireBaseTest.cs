@@ -44,6 +44,7 @@ public class fireBaseTest : MonoBehaviour {
 			Debug.Log (new_x);
 			Debug.Log (new_y);
 			Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, locationVector3, Quaternion.Euler (0, 0, 0));
+			Destroy(pointInstance, 10);
 			//Debug.Log (angle.ToString());
 			//Debug.Log (length.ToString ());
 		}
