@@ -28,10 +28,11 @@ public class UDPTest : MonoBehaviour {
 
 	public int port;
 	public int scale = 10;
-	public Transform pointCloud;
+	public GameObject pointCloud;
 	public string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
+	public int count = 0;
 
 	private static void Main(){
 		UDPTest receiveObj = new UDPTest ();
@@ -90,6 +91,10 @@ public class UDPTest : MonoBehaviour {
 				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
 
 				queue.Enqueue(lidarpoint);
+				count = count + 1;
+				if (count == 360){
+					print("Cycle");
+				}
 
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
@@ -152,8 +157,12 @@ public class UDPTest : MonoBehaviour {
 		//Debug.Log (new_y);
 		//string message = "That outta do it";
 		//print(message);
+		/*
+GameObject point= Instantiate(A, new Vector3 (0,0,0), Quaternion.identity) as GameObject; 
+point.transform.parent = GameObject.Find("Square").transform;
+*/
 		GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
-		pointInstance.transform.parent = transform;
+		pointInstance.transform.parent = GameObject.Find("Cube").transform;
 		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 		pointInstance.name = name;
 	}

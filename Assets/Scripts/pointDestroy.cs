@@ -7,5 +7,4 @@ public class pointDestroy : MonoBehaviour {
 	void Awake () {
 		Destroy (gameObject, time);
 	}
-
 }
