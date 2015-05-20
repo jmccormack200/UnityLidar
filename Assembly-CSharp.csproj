@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\UDPEnum.cs" />
      <Compile Include="Assets\Scripts\UDPTest.cs" />
      <Compile Include="Assets\Scripts\fireBaseTest.cs" />
+     <Compile Include="Assets\Scripts\pointDestroy.cs" />
      <Compile Include="Assets\SimpleJSON\JSON Tests\CSharp\Test_CSharp.cs" />
      <Compile Include="Assets\SimpleJSON\plugins\SimpleJSON.cs" />
      <None Include="Assets\SimpleJSON\JSON Tests\TroubleShoot.txt" />

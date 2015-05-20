@@ -46,17 +46,6 @@ public class UDPTest : MonoBehaviour {
 
 	// Use this for initialization
 	public void Start () {
-		//For now Id is only equal to 1, this is simply to prepare for 
-		//the use of multiple Lidars. 
-		/*
-		int lidarId = 1;
-		for (int i = 0; i <=360; i++) {
-			Rigidbody pointInstance = (Rigidbody)GameObject.Instantiate (pointCloud, new Vector3 (10000, 10000, 10000), Quaternion.Euler (0, 0, 0));
-			pointInstance.transform.parent = transform;
-			string name = (string)lidarId.ToString() + i.ToString();
-			pointInstance.name = name;
-		}
-		*/
 		init ();
 		InvokeRepeating ("Loop", Mathf.Epsilon, 0.00002f);
 	}
