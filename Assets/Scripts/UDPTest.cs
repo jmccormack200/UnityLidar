@@ -6,6 +6,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 public struct LidarPoint{
@@ -33,6 +34,9 @@ public class UDPTest : MonoBehaviour {
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
 	public int count = 0;
+
+	//Dictionary for storing the name/gameobject pairs
+	private Dictionary<string, GameObject> pointDictionary = new Dictionary<string, GameObject>();
 
 	private static void Main(){
 		UDPTest receiveObj = new UDPTest ();
@@ -91,11 +95,6 @@ public class UDPTest : MonoBehaviour {
 				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
 
 				queue.Enqueue(lidarpoint);
-				count = count + 1;
-				if (count == 360){
-					print("Cycle");
-				}
-
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
 			catch (Exception err){
@@ -152,19 +151,20 @@ public class UDPTest : MonoBehaviour {
 		float new_z = transform.position.z + z;
 		
 		Vector3 locationVector3 = new Vector3 (new_x, new_y, new_z);
-		
-		//Debug.Log (new_x);
-		//Debug.Log (new_y);
-		//string message = "That outta do it";
-		//print(message);
-		/*
-GameObject point= Instantiate(A, new Vector3 (0,0,0), Quaternion.identity) as GameObject; 
-point.transform.parent = GameObject.Find("Square").transform;
-*/
-		GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
-		pointInstance.transform.parent = GameObject.Find("Cube").transform;
+
 		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
-		pointInstance.name = name;
+
+		if (pointDictionary.ContainsKey (name)) {
+			GameObject pointInstance = pointDictionary[name];
+			pointInstance.transform.position = locationVector3;
+		} else {
+			GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
+			pointInstance.transform.parent = GameObject.Find("Cube").transform;
+			pointInstance.name = name;
+			pointDictionary.Add(name, pointInstance);
+		}
+
+
 	}
 	
 	public string getLatestUDPPacket(){
