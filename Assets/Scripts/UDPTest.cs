@@ -16,8 +16,8 @@ public struct LidarPoint{
 
 	public LidarPoint(string id, string x, string y){
 		Id = int.Parse (id);
-		X = int.Parse (x);
-		Y = int.Parse (y);
+		X  = int.Parse (x);
+		Y  = int.Parse (y);
 	}
 }
 
@@ -25,6 +25,7 @@ public struct LidarPoint{
 public class UDPTest : MonoBehaviour {
 
 	Thread receiveThread;
+	Thread printThread;
 	UdpClient client;
 
 	public int port;
@@ -33,7 +34,7 @@ public class UDPTest : MonoBehaviour {
 	public string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
-	public int count = 0;
+
 
 	//Dictionary for storing the name/gameobject pairs
 	private Dictionary<string, GameObject> pointDictionary = new Dictionary<string, GameObject>();
@@ -52,7 +53,8 @@ public class UDPTest : MonoBehaviour {
 	// Use this for initialization
 	public void Start () {
 		init ();
-		InvokeRepeating ("Loop", Mathf.Epsilon, 0.00002f);
+		//Coroutine (Loop());
+		//InvokeRepeating ("Loop", 0, 0.00002f);
 	}
 
 	void OnGUI(){
@@ -61,7 +63,7 @@ public class UDPTest : MonoBehaviour {
 			style.alignment = TextAnchor.UpperLeft;
 			GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
 			        + "shell> nc -u 127.0.0.1 : "+port+" \n"
-			        + "\nLast Packet: \n"+ lastReceivedUDPPackets
+			        + "\nLast Packet: \n" //+ lastReceivedUDPPackets
 			   //     + "\n\nAll Messages: \n"+allReceivedUDPPackets
 			        ,style);
 	}
@@ -76,9 +78,11 @@ public class UDPTest : MonoBehaviour {
 			new ThreadStart (ReceiveData));
 		receiveThread.IsBackground = true;
 		receiveThread.Start ();
-		print ("Right above");
-
-
+		/*
+		printThread = new Thread (new ThreadStart (Loop));
+		printThread.IsBackground = true;
+		printThread.Start ();
+		*/
 	}
 
 	//Threaded portion for recieving and preprocessing the data. 
@@ -156,7 +160,10 @@ public class UDPTest : MonoBehaviour {
 
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
-			pointInstance.transform.position = locationVector3;
+			float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
+			if (distance >= 50){
+				pointInstance.transform.position = locationVector3;
+			}
 		} else {
 			GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
 			pointInstance.transform.parent = GameObject.Find("Cube").transform;
@@ -171,13 +178,20 @@ public class UDPTest : MonoBehaviour {
 			allReceivedUDPPackets = "";
 			return lastReceivedUDPPackets;
 	}
-
+	private int count = 0;
 	//On each frame, read from the Lidar Queue 
 	//Then if there is data call parseData
 	void Loop (){
-		if (queue.Count != 0){
-			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
-			parseData(lidarpoint);
+		while (true) {
+			if (queue.Count != 0) {
+				//LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
+				count = count + 1;
+				if (count == 360) {
+					print ("Cycle");
+					count = 0;
+				}
+				//parseData(lidarpoint);
+			}
 		}
 	}
 
@@ -198,8 +212,5 @@ public class UDPTest : MonoBehaviour {
 		
 		client.Close(); 
 	} 
-	void Update()
-	{
 
-	}
 }
