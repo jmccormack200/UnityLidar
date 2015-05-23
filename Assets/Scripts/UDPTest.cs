@@ -54,7 +54,7 @@ public class UDPTest : MonoBehaviour {
 	public void Start () {
 		init ();
 		//Coroutine (Loop());
-		//InvokeRepeating ("Loop", 0, 0.00002f);
+		InvokeRepeating ("Loop", 0, 0.00002f);
 	}
 
 	void OnGUI(){
@@ -78,11 +78,6 @@ public class UDPTest : MonoBehaviour {
 			new ThreadStart (ReceiveData));
 		receiveThread.IsBackground = true;
 		receiveThread.Start ();
-		/*
-		printThread = new Thread (new ThreadStart (Loop));
-		printThread.IsBackground = true;
-		printThread.Start ();
-		*/
 	}
 
 	//Threaded portion for recieving and preprocessing the data. 
@@ -97,8 +92,11 @@ public class UDPTest : MonoBehaviour {
 				//print (">> " + text);
 				lastReceivedUDPPackets = text;
 				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
-
-				queue.Enqueue(lidarpoint);
+				if (pointDictionary.ContainsKey (name)){
+					GameObject pointInstance = pointDictionary[name];
+				} else {
+					queue.Enqueue(lidarpoint);
+				}
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
 			catch (Exception err){
@@ -170,29 +168,44 @@ public class UDPTest : MonoBehaviour {
 			pointInstance.name = name;
 			pointDictionary.Add(name, pointInstance);
 		}
-
-
 	}
 	
 	public string getLatestUDPPacket(){
 			allReceivedUDPPackets = "";
 			return lastReceivedUDPPackets;
 	}
-	private int count = 0;
 	//On each frame, read from the Lidar Queue 
 	//Then if there is data call parseData
+
 	void Loop (){
-		while (true) {
-			if (queue.Count != 0) {
-				//LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
-				count = count + 1;
-				if (count == 360) {
-					print ("Cycle");
-					count = 0;
-				}
-				//parseData(lidarpoint);
-			}
+
+		if (queue.Count > 0) {
+			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
+			parseData (lidarpoint);
 		}
+		if (queue.Count > 360) {
+			queue.Clear ();
+		}
+	}
+
+	/*
+	 * int count = 0;
+	IEnumerator Loop (){
+		if (queue.Count != 0) {
+			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
+			count = count + 1;
+			if (count == 360) {
+				print ("Cycle");
+				count = 0;
+			}
+			parseData(lidarpoint);
+		}
+		yield return null;
+	}
+	*/
+
+	void Update(){
+		//queue.Clear ();
 	}
 
 	void OnAplicationQuit()
@@ -204,7 +217,8 @@ public class UDPTest : MonoBehaviour {
 	}
 
 	//This section prevents Unity from crashing everytime the program
-	//is reloaded
+	//is reloaded\
+	/*
 	void OnDisable() 
 	{ 
 		if ( receiveThread!= null) 
@@ -212,5 +226,5 @@ public class UDPTest : MonoBehaviour {
 		
 		client.Close(); 
 	} 
-
+*/
 }
