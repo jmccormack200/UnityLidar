@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\fireBaseTest.cs" />
      <Compile Include="Assets\Scripts\pointDestroy.cs" />
      <Compile Include="Assets\Scripts\pointQueue.cs" />
+     <Compile Include="Assets\Scripts\pointQueueMono.cs" />
      <Compile Include="Assets\SimpleJSON\JSON Tests\CSharp\Test_CSharp.cs" />
      <Compile Include="Assets\SimpleJSON\plugins\SimpleJSON.cs" />
      <None Include="Assets\SimpleJSON\JSON Tests\TroubleShoot.txt" />

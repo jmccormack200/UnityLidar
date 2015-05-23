@@ -92,11 +92,15 @@ public class UDPTest : MonoBehaviour {
 				//print (">> " + text);
 				lastReceivedUDPPackets = text;
 				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
+				string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 				if (pointDictionary.ContainsKey (name)){
 					GameObject pointInstance = pointDictionary[name];
+					pointQueue pointqueue = pointInstance.GetComponent<pointQueue>();
+					pointqueue.addtoQueue(lidarpoint);
 				} else {
 					queue.Enqueue(lidarpoint);
 				}
+	
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
 			catch (Exception err){
@@ -183,7 +187,7 @@ public class UDPTest : MonoBehaviour {
 			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
 			parseData (lidarpoint);
 		}
-		if (queue.Count > 360) {
+		if (queue.Count > 720) {
 			queue.Clear ();
 		}
 	}
