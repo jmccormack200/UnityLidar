@@ -92,15 +92,7 @@ public class UDPTest : MonoBehaviour {
 				//print (">> " + text);
 				lastReceivedUDPPackets = text;
 				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
-				string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
-				if (pointDictionary.ContainsKey (name)){
-					GameObject pointInstance = pointDictionary[name];
-					pointQueue pointqueue = pointInstance.GetComponent<pointQueue>();
-					pointqueue.addtoQueue(lidarpoint);
-				} else {
-					queue.Enqueue(lidarpoint);
-				}
-	
+				queue.Enqueue(lidarpoint);
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
 			catch (Exception err){
@@ -163,9 +155,8 @@ public class UDPTest : MonoBehaviour {
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
 			float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
-			if (distance >= 50){
-				pointInstance.transform.position = locationVector3;
-			}
+			pointInstance.transform.position = locationVector3;
+
 		} else {
 			GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
 			pointInstance.transform.parent = GameObject.Find("Cube").transform;
@@ -183,30 +174,14 @@ public class UDPTest : MonoBehaviour {
 
 	void Loop (){
 
-		if (queue.Count > 0) {
+		for (int i = 0; i < 360; i++){
+			if (queue.Count > 0) {
 			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
 			parseData (lidarpoint);
-		}
-		if (queue.Count > 720) {
-			queue.Clear ();
-		}
-	}
-
-	/*
-	 * int count = 0;
-	IEnumerator Loop (){
-		if (queue.Count != 0) {
-			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue();
-			count = count + 1;
-			if (count == 360) {
-				print ("Cycle");
-				count = 0;
 			}
-			parseData(lidarpoint);
 		}
-		yield return null;
 	}
-	*/
+	
 
 	void Update(){
 		//queue.Clear ();
@@ -218,17 +193,5 @@ public class UDPTest : MonoBehaviour {
 			receiveThread.Abort(); 
 		}
 		client.Close(); 
-	}
-
-	//This section prevents Unity from crashing everytime the program
-	//is reloaded\
-	/*
-	void OnDisable() 
-	{ 
-		if ( receiveThread!= null) 
-			receiveThread.Abort(); 
-		
-		client.Close(); 
-	} 
-*/
+	}	
 }
