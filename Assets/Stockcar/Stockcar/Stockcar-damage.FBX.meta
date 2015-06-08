@@ -10,6 +10,40 @@ labels:
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: Body_damage_BK
+    100002: Body_damage_FT
+    100004: Body_damage_LF
+    100006: Body_damage_LR
+    100008: Body_damage_LS
+    100010: Body_damage_RF
+    100012: Body_damage_RR
+    100014: Body_damage_RS
+    100016: //RootNode
+    400000: Body_damage_BK
+    400002: Body_damage_FT
+    400004: Body_damage_LF
+    400006: Body_damage_LR
+    400008: Body_damage_LS
+    400010: Body_damage_RF
+    400012: Body_damage_RR
+    400014: Body_damage_RS
+    400016: //RootNode
+    2300000: Body_damage_BK
+    2300002: Body_damage_FT
+    2300004: Body_damage_LF
+    2300006: Body_damage_LR
+    2300008: Body_damage_LS
+    2300010: Body_damage_RF
+    2300012: Body_damage_RR
+    2300014: Body_damage_RS
+    3300000: Body_damage_BK
+    3300002: Body_damage_FT
+    3300004: Body_damage_LF
+    3300006: Body_damage_LR
+    3300008: Body_damage_LS
+    3300010: Body_damage_RF
+    3300012: Body_damage_RR
+    3300014: Body_damage_RS
     4300000: Body_damage_RS
     4300002: Body_damage_FT
     4300004: Body_damage_LF
@@ -18,6 +52,7 @@ ModelImporter:
     4300010: Body_damage_BK
     4300012: Body_damage_RF
     4300014: Body_damage_LS
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 3

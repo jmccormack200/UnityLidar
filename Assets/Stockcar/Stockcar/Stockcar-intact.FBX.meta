@@ -9,6 +9,40 @@ labels:
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: Intact_body_BK
+    100002: Intact_body_FT
+    100004: Intact_body_LFv
+    100006: Intact_body_LR
+    100008: Intact_body_LS
+    100010: Intact_body_RF
+    100012: Intact_body_RR
+    100014: Intact_body_RS
+    100016: //RootNode
+    400000: Intact_body_BK
+    400002: Intact_body_FT
+    400004: Intact_body_LFv
+    400006: Intact_body_LR
+    400008: Intact_body_LS
+    400010: Intact_body_RF
+    400012: Intact_body_RR
+    400014: Intact_body_RS
+    400016: //RootNode
+    2300000: Intact_body_BK
+    2300002: Intact_body_FT
+    2300004: Intact_body_LFv
+    2300006: Intact_body_LR
+    2300008: Intact_body_LS
+    2300010: Intact_body_RF
+    2300012: Intact_body_RR
+    2300014: Intact_body_RS
+    3300000: Intact_body_BK
+    3300002: Intact_body_FT
+    3300004: Intact_body_LFv
+    3300006: Intact_body_LR
+    3300008: Intact_body_LS
+    3300010: Intact_body_RF
+    3300012: Intact_body_RR
+    3300014: Intact_body_RS
     4300000: Intact_body_BK
     4300002: Intact_body_FT
     4300004: Intact_body_LFv
@@ -17,6 +51,7 @@ ModelImporter:
     4300010: Intact_body_LS
     4300012: Intact_body_RR
     4300014: Intact_body_LR
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 3

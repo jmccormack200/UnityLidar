@@ -10,6 +10,32 @@ labels:
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
+    100000: Body_Complete
+    100002: //RootNode
+    100004: Stockcar_Frame
+    100006: Wheel_LF
+    100008: Wheel_LR
+    100010: Wheel_RF
+    100012: Wheel_RR
+    400000: Body_Complete
+    400002: //RootNode
+    400004: Stockcar_Frame
+    400006: Wheel_LF
+    400008: Wheel_LR
+    400010: Wheel_RF
+    400012: Wheel_RR
+    2300000: Body_Complete
+    2300002: Stockcar_Frame
+    2300004: Wheel_LF
+    2300006: Wheel_LR
+    2300008: Wheel_RF
+    2300010: Wheel_RR
+    3300000: Body_Complete
+    3300002: Stockcar_Frame
+    3300004: Wheel_LF
+    3300006: Wheel_LR
+    3300008: Wheel_RF
+    3300010: Wheel_RR
     4300000: Body_damage_RS
     4300002: Body_damage_FT
     4300004: Body_damage_LF
@@ -36,6 +62,7 @@ ModelImporter:
     4300046: Wheel_RR
     4300048: Wheel_LF
     4300050: Wheel_LR
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 3

@@ -154,7 +154,7 @@ public class UDPTest : MonoBehaviour {
 
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
-			float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
+			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
 			pointInstance.transform.position = locationVector3;
 
 		} else {
