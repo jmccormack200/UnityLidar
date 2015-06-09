@@ -27,6 +27,8 @@ public class UDPTest : MonoBehaviour {
 	Thread receiveThread;
 	Thread printThread;
 	UdpClient client;
+	UdpClient sendclient;
+	IPEndPoint remoteEndPoint;
 
 	public int port;
 	public int scale = 10;
@@ -34,6 +36,10 @@ public class UDPTest : MonoBehaviour {
 	public string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
+
+
+	public string arduinoIP = "192.168.0.111";
+	public int arduinoport = 2390;
 
 
 	//Dictionary for storing the name/gameobject pairs
@@ -73,6 +79,9 @@ public class UDPTest : MonoBehaviour {
 		port = 8051;
 		print ("Sending to 127.0.0.1 : " + port);
 		print ("Test-Sending to this Port: nc -u 127.0.0.1 " + port + "");
+
+		remoteEndPoint = new IPEndPoint(IPAddress.Parse(arduinoIP), arduinoport);
+		sendclient = new UdpClient();
 
 		receiveThread = new Thread (
 			new ThreadStart (ReceiveData));
@@ -155,6 +164,8 @@ public class UDPTest : MonoBehaviour {
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
 			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
+			byte[] data = Encoding.UTF8.GetBytes(length.ToString());
+			sendclient.Send(data, data.Length, remoteEndPoint);
 			pointInstance.transform.position = locationVector3;
 
 		} else {
