@@ -162,8 +162,10 @@ public class UDPTest : MonoBehaviour {
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
 			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
-			byte[] data = Encoding.UTF8.GetBytes("test");
-			client.Send(data, data.Length, remoteEndPoint);
+			if (length < 700 && length > 30){
+				byte[] data = Encoding.UTF8.GetBytes(length.ToString());
+				client.Send(data, data.Length, remoteEndPoint);
+			}
 			pointInstance.transform.position = locationVector3;
 
 		} else {
@@ -185,8 +187,8 @@ public class UDPTest : MonoBehaviour {
 
 		for (int i = 0; i < 360; i++){
 			if (queue.Count > 0) {
-			LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
-			parseData (lidarpoint);
+				LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
+				parseData (lidarpoint);
 			}
 		}
 	}
