@@ -25,6 +25,7 @@ public struct LidarPoint{
 public class UDPTest : MonoBehaviour {
 
 	Thread receiveThread;
+	Thread sendThread;
 	Thread printThread;
 	UdpClient client;
 	IPEndPoint remoteEndPoint;
@@ -35,6 +36,7 @@ public class UDPTest : MonoBehaviour {
 	public string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
+	private Queue send_queue = new Queue();
 
 
 	public string arduinoIP = "192.168.0.111";
@@ -85,6 +87,10 @@ public class UDPTest : MonoBehaviour {
 			new ThreadStart (ReceiveData));
 		receiveThread.IsBackground = true;
 		receiveThread.Start ();
+		sendThread = new Thread(
+			new ThreadStart (SendData));
+		sendThread.IsBackground = true;
+		sendThread.Start();
 	}
 
 	//Threaded portion for recieving and preprocessing the data. 
@@ -103,6 +109,20 @@ public class UDPTest : MonoBehaviour {
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
 			catch (Exception err){
+				print (err.ToString ());
+			}
+		}
+	}
+
+	private void SendData(){
+		while(true){
+			try {
+				if (send_queue.Count > 0){
+					string length = send_queue.Dequeue().ToString();
+					byte[] data = Encoding.UTF8.GetBytes(length);
+					client.Send(data, data.Length, remoteEndPoint);
+				}
+			} catch (Exception err){
 				print (err.ToString ());
 			}
 		}
@@ -159,13 +179,14 @@ public class UDPTest : MonoBehaviour {
 
 		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 
+		if (length < 700 && length > 30){
+			send_queue.Enqueue(length.ToString());
+		}
+
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
 			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
-			if (length < 700 && length > 30){
-				byte[] data = Encoding.UTF8.GetBytes(length.ToString());
-				client.Send(data, data.Length, remoteEndPoint);
-			}
+
 			pointInstance.transform.position = locationVector3;
 
 		} else {
