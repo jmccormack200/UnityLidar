@@ -28,6 +28,7 @@ public class UDPTest : MonoBehaviour {
 	Thread sendThread;
 	Thread printThread;
 	UdpClient client;
+	UdpClient sendclient;
 	IPEndPoint remoteEndPoint;
 
 	public int port;
@@ -64,23 +65,7 @@ public class UDPTest : MonoBehaviour {
 		InvokeRepeating ("Loop", 0, 0.00002f);
 	}
 
-	void OnGUI(){
-			Rect rectObj = new Rect (40, 10, 200, 400);
-			GUIStyle style = new GUIStyle ();
-			style.alignment = TextAnchor.UpperLeft;
-			GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
-			        + "shell> nc -u 127.0.0.1 : "+port+" \n"
-			        + "\nLast Packet: \n" //+ lastReceivedUDPPackets
-			   //     + "\n\nAll Messages: \n"+allReceivedUDPPackets
-			        ,style);
-	}
-
 	private void init(){
-		print ("UDPSend.init()");
-		port = 8051;
-		print ("Sending to 127.0.0.1 : " + port);
-		print ("Test-Sending to this Port: nc -u 127.0.0.1 " + port + "");
-
 		remoteEndPoint = new IPEndPoint(IPAddress.Parse(arduinoIP), arduinoport);
 
 		receiveThread = new Thread (
@@ -115,6 +100,7 @@ public class UDPTest : MonoBehaviour {
 	}
 
 	private void SendData(){
+		sendclient = new UdpClient (arduinoport);
 		while(true){
 			try {
 				if (send_queue.Count > 0){
@@ -160,9 +146,6 @@ public class UDPTest : MonoBehaviour {
 		int angle = lidarpoint.X;
 		int length = lidarpoint.Y;
 		
-		//float angle = N ["angle"].AsFloat;
-		//float length = N ["length"].AsFloat;
-		
 		float radians = angle * (Mathf.PI / 180);
 		float x = length * Mathf.Sin (radians);
 		float y = length * Mathf.Cos (radians);
@@ -185,8 +168,6 @@ public class UDPTest : MonoBehaviour {
 
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
-			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
-
 			pointInstance.transform.position = locationVector3;
 
 		} else {
@@ -196,11 +177,7 @@ public class UDPTest : MonoBehaviour {
 			pointDictionary.Add(name, pointInstance);
 		}
 	}
-	
-	public string getLatestUDPPacket(){
-			allReceivedUDPPackets = "";
-			return lastReceivedUDPPackets;
-	}
+
 	//On each frame, read from the Lidar Queue 
 	//Then if there is data call parseData
 
@@ -213,11 +190,7 @@ public class UDPTest : MonoBehaviour {
 			}
 		}
 	}
-	
 
-	void Update(){
-		//queue.Clear ();
-	}
 
 	void OnAplicationQuit()
 	{
