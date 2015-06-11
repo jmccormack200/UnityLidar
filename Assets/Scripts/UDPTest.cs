@@ -75,7 +75,7 @@ public class UDPTest : MonoBehaviour {
 		sendThread = new Thread(
 			new ThreadStart (SendData));
 		sendThread.IsBackground = true;
-		sendThread.Start();
+		//sendThread.Start();
 	}
 
 	//Threaded portion for recieving and preprocessing the data. 
@@ -106,7 +106,7 @@ public class UDPTest : MonoBehaviour {
 				if (send_queue.Count > 0){
 					string length = send_queue.Dequeue().ToString();
 					byte[] data = Encoding.UTF8.GetBytes(length);
-					client.Send(data, data.Length, remoteEndPoint);
+					sendclient.Send(data, data.Length, remoteEndPoint);
 				}
 			} catch (Exception err){
 				print (err.ToString ());
@@ -185,6 +185,7 @@ public class UDPTest : MonoBehaviour {
 
 		for (int i = 0; i < 360; i++){
 			if (queue.Count > 0) {
+				print("Here");
 				LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
 				parseData (lidarpoint);
 			}
