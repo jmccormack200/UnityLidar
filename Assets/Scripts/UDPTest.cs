@@ -1,6 +1,11 @@
+/*
+ * Adapted from http://forum.unity3d.com/threads/simple-udp-implementation-send-read-via-mono-c.15900/
+ * 
+ */
+
+
 using UnityEngine;
 using System.Collections;
-
 using System;
 using System.Text;
 using System.Net;
@@ -26,7 +31,7 @@ public class UDPTest : MonoBehaviour {
 
 	Thread receiveThread;
 	Thread sendThread;
-	Thread printThread;
+
 	UdpClient client;
 	IPEndPoint remoteEndPoint;
 
@@ -38,6 +43,18 @@ public class UDPTest : MonoBehaviour {
 	private Queue queue = new Queue();
 	private Queue send_queue = new Queue();
 
+	//Used for bad data points
+	// Where the distance = 0
+	public int badDataPoint = 0;
+	public int totalPoints = 0;
+
+	//Track latency
+	public float lastTime = 0;
+	public float currentTime = 0;
+
+	//check accuracy
+	public int childrenSweep = 0;
+	public int numberofChildren = 0;
 
 	public string arduinoIP = "192.168.0.111";
 	public int arduinoport = 2390;
@@ -70,12 +87,15 @@ public class UDPTest : MonoBehaviour {
 			style.alignment = TextAnchor.UpperLeft;
 			GUI.Box(rectObj,"# UDPReceive\n127.0.0.1 "+port+" #\n"
 			        + "shell> nc -u 127.0.0.1 : "+port+" \n"
-			        + "\nLast Packet: \n" //+ lastReceivedUDPPackets
-			   //     + "\n\nAll Messages: \n"+allReceivedUDPPackets
+			        + "\n\nUpdate Time: \n" + currentTime.ToString()
+		        	+ "\n Number of Bad Data Points \n" + badDataPoint.ToString()
+		        	+ "\n Total Number of Packets \n" + totalPoints.ToString()
+		        	+ "\n Total Number of Angles \n" + numberofChildren.ToString()
 			        ,style);
 	}
 
 	private void init(){
+		lastTime = Time.time;
 		print ("UDPSend.init()");
 		port = 8051;
 		print ("Sending to 127.0.0.1 : " + port);
@@ -87,10 +107,10 @@ public class UDPTest : MonoBehaviour {
 			new ThreadStart (ReceiveData));
 		receiveThread.IsBackground = true;
 		receiveThread.Start ();
-		sendThread = new Thread(
-			new ThreadStart (SendData));
-		sendThread.IsBackground = true;
-		sendThread.Start();
+		//sendThread = new Thread(
+		//	new ThreadStart (SendData));
+		//sendThread.IsBackground = true;
+		//sendThread.Start();
 	}
 
 	//Threaded portion for recieving and preprocessing the data. 
@@ -179,9 +199,25 @@ public class UDPTest : MonoBehaviour {
 
 		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 
+		/*
 		if (length < 700 && length > 30){
 			send_queue.Enqueue(length.ToString());
 		}
+		*/
+		numberofChildren = transform.childCount;
+		totalPoints += 1;
+		childrenSweep += 1;
+		if (length == 0){
+			badDataPoint += 1;
+		}
+		if (childrenSweep >= numberofChildren){
+			currentTime = Time.time - lastTime;
+			childrenSweep = 0;
+			lastTime = Time.time;
+
+		} 
+
+
 
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
@@ -208,21 +244,29 @@ public class UDPTest : MonoBehaviour {
 
 		for (int i = 0; i < 360; i++){
 			if (queue.Count > 0) {
-				LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
-				parseData (lidarpoint);
+				try {
+					LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
+					parseData (lidarpoint);
+				} catch {
+					print("Miss");
+					print(queue.Count);
+				}
 			}
 		}
 	}
 	
 
 	void Update(){
-		//queue.Clear ();
+		queue.Clear ();
 	}
 
 	void OnAplicationQuit()
 	{
 		if (receiveThread.IsAlive) {
 			receiveThread.Abort(); 
+		}
+		if (sendThread.IsAlive){
+			sendThread.Abort();
 		}
 		client.Close(); 
 	}	
