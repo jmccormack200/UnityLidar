@@ -38,7 +38,7 @@ public class UDPTest : MonoBehaviour {
 	public int port;
 	public int scale = 10;
 	public GameObject pointCloud;
-	public string lastReceivedUDPPackets="";
+	private string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
 	private Queue queue = new Queue();
 	private Queue send_queue = new Queue();
@@ -78,7 +78,8 @@ public class UDPTest : MonoBehaviour {
 	public void Start () {
 		init ();
 		//Coroutine (Loop());
-		InvokeRepeating ("Loop", 0, 0.00002f);
+		//InvokeRepeating ("Loop", 0, 0.00002f);
+		InvokeRepeating ("Loop", 0, .02f);
 	}
 
 	void OnGUI(){
@@ -91,6 +92,7 @@ public class UDPTest : MonoBehaviour {
 		        	+ "\n Number of Bad Data Points \n" + badDataPoint.ToString()
 		        	+ "\n Total Number of Packets \n" + totalPoints.ToString()
 		        	+ "\n Total Number of Angles \n" + numberofChildren.ToString()
+		        	+ "\n Size of Queue : \n " + queue.Count.ToString()
 			        ,style);
 	}
 
@@ -217,8 +219,6 @@ public class UDPTest : MonoBehaviour {
 
 		} 
 
-
-
 		if (pointDictionary.ContainsKey (name)) {
 			GameObject pointInstance = pointDictionary[name];
 			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
@@ -241,23 +241,24 @@ public class UDPTest : MonoBehaviour {
 	//Then if there is data call parseData
 
 	void Loop (){
-
-		for (int i = 0; i < 360; i++){
-			if (queue.Count > 0) {
-				try {
-					LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
-					parseData (lidarpoint);
-				} catch {
-					print("Miss");
-					print(queue.Count);
-				}
+		int lengthofQueue = queue.Count;
+		if (lengthofQueue > 300){
+			for (int i = 0; i < lengthofQueue; i++){
+				if (queue.Count > 0) {
+					try {
+						LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
+						parseData (lidarpoint);
+					} catch {
+						break;
+					}
+				} 
 			}
 		}
 	}
 	
 
 	void Update(){
-		queue.Clear ();
+		//queue.Clear ();
 	}
 
 	void OnAplicationQuit()
