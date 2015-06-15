@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\CubeCollision.cs" />
      <Compile Include="Assets\Scripts\LidarStart.cs" />
      <Compile Include="Assets\Scripts\UDPEnum.cs" />
      <Compile Include="Assets\Scripts\UDPTest.cs" />

@@ -268,9 +268,7 @@ public class UDPTest : MonoBehaviour {
 					}
 				} 
 			}
-		} else {
-			print("miss thread");
-		}
+		} 
 	}
 	
 
