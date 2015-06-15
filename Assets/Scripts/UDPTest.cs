@@ -61,7 +61,8 @@ public class UDPTest : MonoBehaviour {
 
 
 	//Dictionary for storing the name/gameobject pairs
-	private Dictionary<string, GameObject> pointDictionary = new Dictionary<string, GameObject>();
+	//private Dictionary<string, GameObject> pointDictionary = new Dictionary<string, GameObject>();
+	private GameObject[] pointArray = new GameObject[370];
 
 	private static void Main(){
 		UDPTest receiveObj = new UDPTest ();
@@ -79,7 +80,7 @@ public class UDPTest : MonoBehaviour {
 		init ();
 		//Coroutine (Loop());
 		//InvokeRepeating ("Loop", 0, 0.00002f);
-		InvokeRepeating ("Loop", 0, .02f);
+		InvokeRepeating ("Loop", 0, .002f);
 	}
 
 	void OnGUI(){
@@ -103,32 +104,40 @@ public class UDPTest : MonoBehaviour {
 		print ("Sending to 127.0.0.1 : " + port);
 		print ("Test-Sending to this Port: nc -u 127.0.0.1 " + port + "");
 
+		addPoints();
+
 		remoteEndPoint = new IPEndPoint(IPAddress.Parse(arduinoIP), arduinoport);
 
 		receiveThread = new Thread (
 			new ThreadStart (ReceiveData));
-		receiveThread.IsBackground = true;
+		//receiveThread.IsBackground = true;
 		receiveThread.Start ();
-		//sendThread = new Thread(
-		//	new ThreadStart (SendData));
-		//sendThread.IsBackground = true;
-		//sendThread.Start();
+		sendThread = new Thread(
+			new ThreadStart (SendData));
+		sendThread.IsBackground = true;
+		sendThread.Start();
 	}
 
-	//Threaded portion for recieving and preprocessing the data. 
+	private void addPoints(){
+		for(int i = 0; i <= 360; i++){
+			GameObject pointInstance = (GameObject)Instantiate (pointCloud, Vector3.zero, Quaternion.identity);
+			pointInstance.transform.parent = GameObject.Find("Cube").transform;
+			pointInstance.name = i.ToString();
+			pointArray[i] = pointInstance;
+		}
+	}
+
+
+//Threaded portion for recieving and preprocessing the data. 
 	private void ReceiveData(){
 		client = new UdpClient (port);
 		while (true) {
 			try {
 				IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, 0);
 				byte[] data = client.Receive (ref anyIP);
-
 				string text = Encoding.UTF8.GetString (data);
-				//print (">> " + text);
-				lastReceivedUDPPackets = text;
-				LidarPoint lidarpoint = convertData(lastReceivedUDPPackets);
+				LidarPoint lidarpoint = convertData(text);
 				queue.Enqueue(lidarpoint);
-				allReceivedUDPPackets = allReceivedUDPPackets + text;
 			}
 			catch (Exception err){
 				print (err.ToString ());
@@ -199,13 +208,13 @@ public class UDPTest : MonoBehaviour {
 		
 		Vector3 locationVector3 = new Vector3 (new_x, new_y, new_z);
 
-		string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
+		//string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 
-		/*
+	
 		if (length < 700 && length > 30){
 			send_queue.Enqueue(length.ToString());
 		}
-		*/
+
 		numberofChildren = transform.childCount;
 		totalPoints += 1;
 		childrenSweep += 1;
@@ -219,18 +228,10 @@ public class UDPTest : MonoBehaviour {
 
 		} 
 
-		if (pointDictionary.ContainsKey (name)) {
-			GameObject pointInstance = pointDictionary[name];
-			//float distance = Vector3.Distance (pointInstance.transform.position, locationVector3);
+		GameObject pointInstance = pointArray[angle];
+		pointInstance.transform.position = locationVector3;
 
-			pointInstance.transform.position = locationVector3;
 
-		} else {
-			GameObject pointInstance = (GameObject)Instantiate (pointCloud, locationVector3, Quaternion.identity);
-			pointInstance.transform.parent = GameObject.Find("Cube").transform;
-			pointInstance.name = name;
-			pointDictionary.Add(name, pointInstance);
-		}
 	}
 	
 	public string getLatestUDPPacket(){
@@ -241,6 +242,7 @@ public class UDPTest : MonoBehaviour {
 	//Then if there is data call parseData
 
 	void Loop (){
+		/*
 		int lengthofQueue = queue.Count;
 		if (lengthofQueue > 300){
 			for (int i = 0; i < lengthofQueue; i++){
@@ -253,6 +255,21 @@ public class UDPTest : MonoBehaviour {
 					}
 				} 
 			}
+		}
+		*/
+		if (queue.Count >= 500) {
+			for (int i = 0; i < 360; i++){
+				if (queue.Count > 0) {
+					try {
+						LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
+						parseData (lidarpoint);
+					} catch {
+						break;
+					}
+				} 
+			}
+		} else {
+			print("miss thread");
 		}
 	}
 	
