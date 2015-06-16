@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CubeCollision : MonoBehaviour {
 
+	private increaseScore otherScript;
+
 	void OnCollisionEnter(Collision collision){
 		GetComponent<Renderer>().material.color = Color.blue;
 		print("Collision");
@@ -11,6 +13,7 @@ public class CubeCollision : MonoBehaviour {
 
 	void OnCollisionExit(Collision collision){
 		GetComponent<Renderer>().material.color = Color.red;
-		print("No Collision");
+		otherScript = GameObject.FindGameObjectWithTag("ScoreText").GetComponent<increaseScore>();
+		otherScript.UpdateCount();
 	}
 }

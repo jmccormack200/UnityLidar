@@ -51,6 +51,7 @@
      <Compile Include="Assets\Scripts\UDPEnum.cs" />
      <Compile Include="Assets\Scripts\UDPTest.cs" />
      <Compile Include="Assets\Scripts\fireBaseTest.cs" />
+     <Compile Include="Assets\Scripts\increaseScore.cs" />
      <Compile Include="Assets\Scripts\pointDestroy.cs" />
      <Compile Include="Assets\Scripts\pointQueue.cs" />
      <Compile Include="Assets\Scripts\pointQueueMono.cs" />
