@@ -11,8 +11,8 @@ public class pointNormal : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	public void saveNormal(int set){
-		normal = set;
+	public void saveNormal(float set){
+		normal = (int)set;
 	}
 
 	public int getNormal(){

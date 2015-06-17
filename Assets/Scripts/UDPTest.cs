@@ -121,7 +121,7 @@ public class UDPTest : MonoBehaviour {
 	private void addPoints(){
 		for(int i = 0; i <= 360; i++){
 			GameObject pointInstance = (GameObject)Instantiate (pointCloud, Vector3.zero, Quaternion.identity);
-			pointInstance.transform.parent = GameObject.Find("Cube").transform;
+			pointInstance.transform.parent = GameObject.Find("LIDAR").transform;
 			pointInstance.name = i.ToString();
 			pointArray[i] = pointInstance;
 		}
@@ -210,10 +210,11 @@ public class UDPTest : MonoBehaviour {
 
 		//string name = (string)lidarpoint.Id.ToString () + lidarpoint.X.ToString ();
 
-	
+		/*
 		if (length < 700 && length > 30){
 			send_queue.Enqueue(length.ToString());
 		}
+		*/
 
 		numberofChildren = transform.childCount;
 		totalPoints += 1;
@@ -233,9 +234,10 @@ public class UDPTest : MonoBehaviour {
 		if (normal == 0){
 			pointInstance.transform.position = locationVector3;
 			pointInstance.GetComponent<Renderer>().enabled = true;
-		} else if((length >= length * .95) || length <= length * 1.05){
+		} else if((length >= normal * .95) || (length <= normal * 1.05)){
 			pointInstance.GetComponent<Renderer>().enabled = false;
 		} else {
+			print("Truth");
 			pointInstance.transform.position = locationVector3;
 			pointInstance.GetComponent<Renderer>().enabled = true;
 		}
