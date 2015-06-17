@@ -62,7 +62,7 @@ public class UDPTest : MonoBehaviour {
 
 	//Dictionary for storing the name/gameobject pairs
 	//private Dictionary<string, GameObject> pointDictionary = new Dictionary<string, GameObject>();
-	private GameObject[] pointArray = new GameObject[370];
+	public GameObject[] pointArray = new GameObject[370];
 
 	private static void Main(){
 		UDPTest receiveObj = new UDPTest ();
@@ -229,9 +229,16 @@ public class UDPTest : MonoBehaviour {
 		} 
 
 		GameObject pointInstance = pointArray[angle];
-		pointInstance.transform.position = locationVector3;
-
-
+		int normal = pointInstance.GetComponent<pointNormal>().getNormal();
+		if (normal == 0){
+			pointInstance.transform.position = locationVector3;
+			pointInstance.GetComponent<Renderer>().enabled = true;
+		} else if((length >= length * .95) || length <= length * 1.05){
+			pointInstance.GetComponent<Renderer>().enabled = false;
+		} else {
+			pointInstance.transform.position = locationVector3;
+			pointInstance.GetComponent<Renderer>().enabled = true;
+		}
 	}
 	
 	public string getLatestUDPPacket(){

@@ -50,9 +50,11 @@
      <Compile Include="Assets\Scripts\LidarStart.cs" />
      <Compile Include="Assets\Scripts\UDPEnum.cs" />
      <Compile Include="Assets\Scripts\UDPTest.cs" />
+     <Compile Include="Assets\Scripts\buttonPress.cs" />
      <Compile Include="Assets\Scripts\fireBaseTest.cs" />
      <Compile Include="Assets\Scripts\increaseScore.cs" />
      <Compile Include="Assets\Scripts\pointDestroy.cs" />
+     <Compile Include="Assets\Scripts\pointNormal.cs" />
      <Compile Include="Assets\Scripts\pointQueue.cs" />
      <Compile Include="Assets\Scripts\pointQueueMono.cs" />
      <Compile Include="Assets\SimpleJSON\JSON Tests\CSharp\Test_CSharp.cs" />
