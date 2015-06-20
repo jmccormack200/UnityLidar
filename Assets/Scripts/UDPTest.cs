@@ -36,7 +36,7 @@ public class UDPTest : MonoBehaviour {
 	IPEndPoint remoteEndPoint;
 
 	public int port;
-	public int scale = 10;
+	public float scale = 50.0f;
 	public GameObject pointCloud;
 	private string lastReceivedUDPPackets="";
 	public string allReceivedUDPPackets = "";
@@ -230,14 +230,13 @@ public class UDPTest : MonoBehaviour {
 		} 
 
 		GameObject pointInstance = pointArray[angle];
-		int normal = pointInstance.GetComponent<pointNormal>().getNormal();
-		if (normal == 0){
+		float normal = pointInstance.GetComponent<pointNormal>().getNormal();
+		if (normal == 0.0f){
 			pointInstance.transform.position = locationVector3;
 			pointInstance.GetComponent<Renderer>().enabled = true;
-		} else if((length >= normal * .95) || (length <= normal * 1.05)){
+		} else if((length / scale >= normal * .90) && (length / scale <= normal * 1.10)){
 			pointInstance.GetComponent<Renderer>().enabled = false;
 		} else {
-			print("Truth");
 			pointInstance.transform.position = locationVector3;
 			pointInstance.GetComponent<Renderer>().enabled = true;
 		}
@@ -251,21 +250,7 @@ public class UDPTest : MonoBehaviour {
 	//Then if there is data call parseData
 
 	void Loop (){
-		/*
-		int lengthofQueue = queue.Count;
-		if (lengthofQueue > 300){
-			for (int i = 0; i < lengthofQueue; i++){
-				if (queue.Count > 0) {
-					try {
-						LidarPoint lidarpoint = (LidarPoint)queue.Dequeue ();
-						parseData (lidarpoint);
-					} catch {
-						break;
-					}
-				} 
-			}
-		}
-		*/
+
 		if (queue.Count >= 500) {
 			for (int i = 0; i < 360; i++){
 				if (queue.Count > 0) {

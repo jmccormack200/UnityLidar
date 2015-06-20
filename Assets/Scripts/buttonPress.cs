@@ -11,8 +11,7 @@ public class buttonPress : MonoBehaviour {
 		pointArray = LIDAR.GetComponent<UDPTest>().pointArray;
 		foreach(GameObject point in pointArray){
 			try{
-				float length = Mathf.Sqrt(Mathf.Pow(point.transform.position.x,2) + 
-				           Mathf.Pow(point.transform.position.z,2));
+				float length = point.transform.position.magnitude;
 				point.GetComponent<pointNormal>().saveNormal(length);
 			} catch {
 

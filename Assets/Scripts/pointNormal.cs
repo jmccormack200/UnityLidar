@@ -3,19 +3,19 @@ using System.Collections;
 
 public class pointNormal : MonoBehaviour {
 
-	public int normal;
+	public float normal;
 
 	// Use this for initialization
 	void Start () {
-		normal = 0;
+		normal = 0.0f;
 	}
 	
 	// Update is called once per frame
 	public void saveNormal(float set){
-		normal = (int)set;
+		normal = set;
 	}
 
-	public int getNormal(){
+	public float getNormal(){
 		return normal;
 	}
 }
