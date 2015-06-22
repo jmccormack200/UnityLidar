@@ -15,6 +15,6 @@ public class CubeCollision : MonoBehaviour {
 		GetComponent<Renderer>().material.color = Color.red;
 		otherScript = GameObject.FindGameObjectWithTag("ScoreText").GetComponent<increaseScore>();
 		otherScript.UpdateCount();
-		Destroy(gameObject, 2);
+		Destroy(gameObject);
 	}
 }

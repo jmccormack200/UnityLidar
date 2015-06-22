@@ -25,7 +25,7 @@ public class buttonPress : MonoBehaviour {
 			if (magnitude == 0){
 				i--;
 			} else {
-				float randomMagnitude = Random.Range (0.0f, (magnitude * 0.9f));
+				float randomMagnitude = Random.Range (0.5f, (magnitude * 0.9f));
 
 				float radians = randAngle * (Mathf.PI / 180);
 				float x = randomMagnitude * Mathf.Sin (radians);
