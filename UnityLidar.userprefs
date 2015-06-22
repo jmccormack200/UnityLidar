@@ -1,19 +1,17 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\UDPTest.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\DatabaseInit.cs">
     <Files>
-      <File FileName="Assets\Scripts\UDPTest.cs" Line="237" Column="81" />
-      <File FileName="Assets\Scripts\buttonPress.cs" Line="15" Column="1" />
-      <File FileName="Assets\Scripts\CubeCollision.cs" Line="20" Column="1" />
-      <File FileName="Assets\Scripts\increaseScore.cs" Line="22" Column="1" />
-      <File FileName="Assets\Scripts\pointNormal.cs" Line="19" Column="1" />
+      <File FileName="Assets\Scripts\UDPTest.cs" Line="266" Column="2" />
+      <File FileName="Assets\Scripts\buttonPress.cs" Line="22" Column="1" />
+      <File FileName="Assets\Scripts\CubeCollision.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\increaseScore.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\pointNormal.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\DatabaseInit.cs" Line="6" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="C:\Users\John\IRG\UnityLidar\Assets\Scripts\buttonPress.cs" line="10" />
-      <Breakpoint file="C:\Users\John\IRG\UnityLidar\Assets\Scripts\UDPTest.cs" line="232" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
