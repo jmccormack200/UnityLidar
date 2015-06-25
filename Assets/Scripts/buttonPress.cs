@@ -16,13 +16,22 @@ public class buttonPress : MonoBehaviour {
 		pointArray = LIDAR.GetComponent<UDPTest>().pointArray;
 		PostGresUtility();
 
-
-
-		/*
 		foreach(GameObject point in pointArray){
 			try{
 				float length = point.transform.position.magnitude;
 				point.GetComponent<pointNormal>().saveNormal(length);
+				float old_length = point.GetComponent<pointNormal>().getLastNormal();
+				float delta = point.GetComponent<pointNormal>().getDelta();
+
+				NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO points VALUES(" +
+				                                      "DEFAULT, :lidarrun, :degree, :normal, :oldnormal, :delta)");
+				cmd.Parameters.Add (new NpgsqlParameter("lidarrun", LidarRunNumber));
+				int degree = int.Parse(point.name);
+				cmd.Parameters.Add (new NpgsqlParameter("degree", degree));
+				cmd.Parameters.Add (new NpgsqlParameter("normal", length));
+				cmd.Parameters.Add (new NpgsqlParameter("oldnormal", old_length));
+				cmd.Parameters.Add (new NpgsqlParameter("delta", delta));
+				cmd.ExecuteNonQuery();
 			} catch {
 
 			}
@@ -45,7 +54,6 @@ public class buttonPress : MonoBehaviour {
 				GameObject collect = (GameObject)Instantiate (collectable, locationVector3, Quaternion.identity);
 			}
 		}
-		*/
 	}
 
 	public void PostGresUtility(string server = "127.0.0.1", string port = "5432", string user_id = "postgres", string password = "1234", string database = "postgres"){
