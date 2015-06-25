@@ -9,13 +9,14 @@ public class buttonPress : MonoBehaviour {
 	public GameObject LIDAR;
 	public GameObject collectable;
 	public GameObject[] pointArray = new GameObject[370];
+	public int LidarRunNumber = 0;
 
 	// Use this for initialization
 	public void press () {
 		pointArray = LIDAR.GetComponent<UDPTest>().pointArray;
 		PostGresUtility();
-		print("Success!");
-		NpgsqlCommand command = conn.CreateCommand();
+
+
 
 		/*
 		foreach(GameObject point in pointArray){
@@ -47,10 +48,14 @@ public class buttonPress : MonoBehaviour {
 		*/
 	}
 
-	public void PostGresUtility(string server = "127.0.0.1", string port = "5432", string user_id = "postgres", string password = "password", string database = "postgres"){
+	public void PostGresUtility(string server = "127.0.0.1", string port = "5432", string user_id = "postgres", string password = "1234", string database = "postgres"){
 		string connectionString = "Server=" + server + ";Port=" + port + ";User Id=" + user_id + ";Password=" + password + ";Database=" + database;
 		//conn = new NpgsqlConnection ("Server=localhost;Port=5432;User Id=postgres;Password=password;Database=postgres");
 		conn = new NpgsqlConnection (connectionString);
 		conn.Open();
+      	string sql = "SELECT max(lidarrun) FROM points";
+		NpgsqlCommand command = conn.CreateCommand();
+		command.CommandText = sql;
+		LidarRunNumber = (int) command.ExecuteScalar ();
 	}
 }
