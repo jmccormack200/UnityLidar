@@ -234,11 +234,14 @@ public class UDPTest : MonoBehaviour {
 		if (normal == 0.0f){
 			pointInstance.transform.position = locationVector3;
 			pointInstance.GetComponent<Renderer>().enabled = true;
+			pointInstance.GetComponent<Collider>().enabled = true;
 		} else if((length / scale >= normal * .90) && (length / scale <= normal * 1.10)){
 			pointInstance.GetComponent<Renderer>().enabled = false;
+			pointInstance.GetComponent<Collider>().enabled = false;
 		} else {
 			pointInstance.transform.position = locationVector3;
 			pointInstance.GetComponent<Renderer>().enabled = true;
+			pointInstance.GetComponent<Collider>().enabled = true;
 		}
 	}
 	

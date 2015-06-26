@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 using Npgsql;
 
 
@@ -22,28 +23,31 @@ public class buttonPress : MonoBehaviour {
 				point.GetComponent<pointNormal>().saveNormal(length);
 				float old_length = point.GetComponent<pointNormal>().getLastNormal();
 				float delta = point.GetComponent<pointNormal>().getDelta();
-
-				NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO points VALUES(" +
-				                                      "DEFAULT, :lidarrun, :degree, :normal, :oldnormal, :delta)");
-				cmd.Parameters.Add (new NpgsqlParameter("lidarrun", LidarRunNumber));
-				int degree = int.Parse(point.name);
-				cmd.Parameters.Add (new NpgsqlParameter("degree", degree));
-				cmd.Parameters.Add (new NpgsqlParameter("normal", length));
-				cmd.Parameters.Add (new NpgsqlParameter("oldnormal", old_length));
-				cmd.Parameters.Add (new NpgsqlParameter("delta", delta));
-				cmd.ExecuteNonQuery();
+				try{
+					NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO points VALUES(" +
+					                                      "DEFAULT, @lidarrun, @degree, @normal, @oldnormal, @delta)", conn);
+					cmd.Parameters.Add (new NpgsqlParameter("@lidarrun", LidarRunNumber));
+					int degree = int.Parse(point.name);
+					cmd.Parameters.Add (new NpgsqlParameter("@degree", degree));
+					cmd.Parameters.Add (new NpgsqlParameter("@normal", length));
+					cmd.Parameters.Add (new NpgsqlParameter("@oldnormal", old_length));
+					cmd.Parameters.Add (new NpgsqlParameter("@delta", delta));
+					cmd.ExecuteNonQuery();
+				} catch(Exception e) {
+					//print(e.ToString ());
+				}
 			} catch {
 
 			}
 		}
 		//Generate 10 random point
 		for(int i = 0; i < 10; i++){
-			int randAngle = Random.Range (0, 360);
+			int randAngle = UnityEngine.Random.Range (0, 360);
 			float magnitude = pointArray[randAngle].transform.position.magnitude;
 			if (magnitude == 0){
 				i--;
 			} else {
-				float randomMagnitude = Random.Range (0.5f, (magnitude * 0.9f));
+				float randomMagnitude = UnityEngine.Random.Range (0.5f, (magnitude * 0.75f));
 
 				float radians = randAngle * (Mathf.PI / 180);
 				float x = randomMagnitude * Mathf.Sin (radians);
@@ -65,5 +69,6 @@ public class buttonPress : MonoBehaviour {
 		NpgsqlCommand command = conn.CreateCommand();
 		command.CommandText = sql;
 		LidarRunNumber = (int) command.ExecuteScalar ();
+		LidarRunNumber = LidarRunNumber + 1;
 	}
 }
